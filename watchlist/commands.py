@@ -17,9 +17,7 @@ def initdb(drop):
 @app.cli.command()
 def forge():
     """Generate fake data."""
-    db.create_all()
-
-    username = "Aaron"
+    
     movies = [
         {"title": "My Neighbor Totoro", "year": "1988"},
         {"title": "Dead Poets Society", "year": "1989"},
@@ -33,13 +31,11 @@ def forge():
         {"title": "The Pork of Music", "year": "2012"},
     ]
 
-    user = User(username=username)
-    db.session.add(user)
+    
     for item in movies:
         movie = Movie(title=item["title"], year=item["year"])
-        db.session.add(movie)
-
-    db.session.commit()
+        movie.save()
+   
     click.echo("Done.")
 
 
@@ -47,19 +43,18 @@ def forge():
 @click.option('--username', prompt=True, help='The username used to login.')
 @click.option('--password', prompt=True, hide_input=True, confirmation_prompt=True, help='The password used to login.')
 def admin(username, password):
-    """Create user."""
-    db.create_all()
+    """Create user."""    
 
-    user = User.query.first()
+    user = User.objects(username=username).first()
     if user is not None:
         click.echo('Updating user...')
         user.username = username
         user.set_password(password)  # 设置密码
+        user.save()
     else:
         click.echo('Creating user...')
         user = User(username=username, name='Admin')
         user.set_password(password)  # 设置密码
-        db.session.add(user)
-
-    db.session.commit()  # 提交数据库会话
+        user.save()
+    
     click.echo('Done.')

@@ -19,18 +19,17 @@ def index():
             return redirect(url_for("index"))  # 重定向回主页
         # 保存表单数据到数据库
         movie = Movie(title=title, year=year)  # 创建记录
-        db.session.add(movie)  # 添加到数据库会话
-        db.session.commit()  # 提交数据库会话
+        movie.save()  # 保存记录
         flash("Item created.")  # 显示成功创建的提示
         return redirect(url_for("index"))  # 重定向回主页
-    movies = Movie.query.all()  # 读取所有电影记录
+    movies = Movie.objects().all()  # 读取所有电影记录
     return render_template("index.html", movies=movies)
 
 
-@app.route("/movie/edit/<int:movie_id>", methods=["GET", "POST"])
+@app.route("/movie/edit/<movie_id>", methods=["GET", "POST"])
 @login_required
 def edit(movie_id):
-    movie = Movie.query.get_or_404(movie_id)
+    movie = Movie.objects().get_or_404(id=movie_id)
 
     if request.method == "POST":  # 处理编辑表单的提交请求
         title = request.form["title"]
@@ -44,19 +43,18 @@ def edit(movie_id):
 
         movie.title = title  # 更新标题
         movie.year = year  # 更新年份
-        db.session.commit()  # 提交数据库会话
+        movie.save()  # 提交数据库会话
         flash("Item updated.")
         return redirect(url_for("index"))  # 重定向回主页
 
     return render_template("edit.html", movie=movie)  # 传入被编辑的电影记录
 
 
-@app.route("/movie/delete/<int:movie_id>", methods=["POST"])  # 限定只接受 POST 请求
+@app.route("/movie/delete/<movie_id>", methods=["POST"])  # 限定只接受 POST 请求
 @login_required
 def delete(movie_id):
-    movie = Movie.query.get_or_404(movie_id)  # 获取电影记录
-    db.session.delete(movie)  # 删除对应的记录
-    db.session.commit()  # 提交数据库会话
+    movie = Movie.objects().get_or_404(id=movie_id)  # 获取电影记录
+    movie.delete()  # 删除对应的记录
     flash("Item deleted.")
     return redirect(url_for("index"))  # 重定向回主页
 
@@ -76,7 +74,7 @@ def settings():
         # 等同于下面的用法
         # user = User.query.first()
         # user.name = name
-        db.session.commit()
+        current_user.save()
         flash('Settings updated.')
         return redirect(url_for('index'))
 
@@ -93,7 +91,7 @@ def login():
             flash('Invalid input.')
             return redirect(url_for('login'))
 
-        user = User.query.first()
+        user = User.objects().first()
         # 验证用户名和密码是否一致
         if username == user.username and user.validate_password(password):
             login_user(user)  # 登入用户

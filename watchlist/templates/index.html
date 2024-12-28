@@ -15,11 +15,11 @@
     {{ movie.title }} - {{ movie.year }}
     <span class="float-right">
       {% if current_user.is_authenticated %}
-      <a class="btn" href="{{ url_for('edit', movie_id=movie.id) }}">Edit</a>
+      <a class="btn" href="{{ url_for('edit', movie_id=movie.id|string) }}">Edit</a>
       <form
         class="inline-form"
         method="post"
-        action="{{ url_for('delete', movie_id=movie.id) }}"
+        action="{{ url_for('delete', movie_id=movie.id|string) }}"
       >
         <input
           class="btn"
@@ -41,6 +41,10 @@
   </li>
   {% endfor %}
 </ul>
+<div>
+  <div><span>username</span><span>Create_at</span></div>
+  <div>Comment Content</div>
+</div>
 <img
   alt="Walking Totoro"
   class="totoro"
