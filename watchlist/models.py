@@ -1,6 +1,6 @@
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import datetime
 from watchlist import db
 
 
@@ -21,3 +21,10 @@ class User(db.Document,UserMixin): # 表名将会是 user（自动生成，小�
 class Movie(db.Document):  # 表名将会是 movie    
     title = db.StringField(required=True)  # 电影标题
     year = db.StringField(required=True,max_length=4)  # 电影年份
+    
+    
+class Comment(db.Document):  # 表名将会是 comment
+    name = db.StringField(required=True)  # 评论人
+    content = db.StringField(required=True)  # 评论内容
+    created_at = db.DateTimeField(default=datetime.datetime.now)  # 创建时间
+    

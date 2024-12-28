@@ -1,8 +1,9 @@
+import comm
 from flask import render_template, request, url_for, redirect, flash
 from flask_login import login_user, login_required, logout_user, current_user
 
 from watchlist import app, db
-from watchlist.models import User, Movie
+from watchlist.models import User, Movie, Comment
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -23,7 +24,8 @@ def index():
         flash("Item created.")  # 显示成功创建的提示
         return redirect(url_for("index"))  # 重定向回主页
     movies = Movie.objects().all()  # 读取所有电影记录
-    return render_template("index.html", movies=movies)
+    comments = Comment.objects().all()
+    return render_template("index.html", movies=movies,comments=comments)  # 渲染模板
 
 
 @app.route("/movie/edit/<movie_id>", methods=["GET", "POST"])
@@ -79,6 +81,17 @@ def settings():
         return redirect(url_for('index'))
 
     return render_template('settings.html')
+
+@app.route('/api/comment', methods=['POST'])
+def comment():
+    comments = Comment.objects().all()
+    if request.method == 'POST':
+        name = request.form['name']
+        content = request.form['content']        
+        Comment(name=name,content=content).save()
+        flash('Comment submitted.')
+    return redirect(url_for('index'))
+    
 
 
 @app.route('/login', methods=['GET', 'POST'])
