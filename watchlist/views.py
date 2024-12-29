@@ -83,8 +83,7 @@ def settings():
     return render_template('settings.html')
 
 @app.route('/api/comment', methods=['POST'])
-def comment():
-    comments = Comment.objects().all()
+def comment():    
     if request.method == 'POST':
         name = request.form['name']
         content = request.form['content']        
