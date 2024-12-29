@@ -7,7 +7,7 @@ from flask_login import LoginManager
 app = Flask(__name__)
 app.config["MONGODB_SETTINGS"] = {
     "db": "watchlist",  # 数据库名称
-    "host": "mongodb+srv://acelee0621:lcneo0621@cluster0.behff.mongodb.net/watchlist?retryWrites=true&w=majority",  # MongoDB Atlas 连接字符串
+    "host": "mongodb+srv://<username>:<password>@cluster0.behff.mongodb.net/watchlist?retryWrites=true&w=majority",  # MongoDB Atlas 连接字符串
 }
 app.config.from_pyfile("config.py")
 db = MongoEngine(app)
