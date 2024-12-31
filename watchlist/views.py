@@ -90,6 +90,13 @@ def comment():
         Comment(name=name,content=content).save()
         flash('Comment submitted.')
     return redirect(url_for('index'))
+
+@app.route('/api/comment/delete/<comment_id>', methods=['POST'])
+def delete_comment(comment_id):
+    comment = Comment.objects().get_or_404(id=comment_id)
+    comment.delete()
+    flash('Comment deleted.')
+    return redirect(url_for('index'))
     
 
 
